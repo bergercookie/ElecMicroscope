@@ -22,7 +22,7 @@ function varargout = microscope(varargin)
 
 % Edit the above text to modify the response to help microscope
 
-% Last Modified by GUIDE v2.5 17-Sep-2015 04:47:05
+% Last Modified by GUIDE v2.5 17-Sep-2015 15:43:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -90,6 +90,14 @@ handles.camera.Id = 1;
 handles.camera = initialize_video(handles.camera_axes, ...
     handles.camera.Id );
 handles.camera.Name = 'FaceTime HD Camera (Built-in)';
+
+%----- plot XY platform
+% default values in the beginning for number of holes
+% initialization of holes struct
+handles.holes.xNum = 12;
+handles.holes.yNum = 8;
+makePlatform(handles.xyplat_axes, handles.holes);
+
 
 % log message
 % clear it at first 
@@ -171,7 +179,7 @@ str = listSerialComPorts();
     'ListString',str);
 
 if ~isempty(selection)
-    port = str{selection}
+    port = str{selection};
     try
         if ok % if selection is indeed made..
             if strcmp(port, 'loopback://')
@@ -589,19 +597,36 @@ function pushbutton9_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on selection change in popupmenu2.
-function popupmenu2_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu2 (see GCBO)
+% --- Executes on selection change in platform_popup.
+function platform_popup_Callback(hObject, eventdata, handles)
+% hObject    handle to platform_popup (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu2
+% Hints: contents = cellstr(get(hObject,'String')) returns platform_popup contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from platform_popup
 
+contents = cellstr(get(hObject,'String'));
+selected = contents{get(hObject,'Value')}
+
+%----- String parsing using REGEXP
+% parse the contents cell string
+pattern = '\d*x\d*';
+stringFound = regexp(selected, pattern, 'match')';
+stringFound = stringFound{1} % initially returned as cell
+Xpos = strfind(stringFound, 'x') % position of x in string
+
+% get xNum, yNum
+handles.holes.xNum = str2num(stringFound(1:Xpos-1));
+handles.holes.yNum = str2num(stringFound(Xpos+1:end));
+
+makePlatform(handles.xyplat_axes, handles.holes);
+% Update handles structure
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
-function popupmenu2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu2 (see GCBO)
+function platform_popup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to platform_popup (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -758,21 +783,27 @@ function serialread_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-bytesize = 4;
-[resultRead, numRead] = fread(handles.com.fid, bytesize)
+bytesize = 100;
+prevTimeout = handles.com.fid.Timeout;
+timeouttime = 0.05;
+handles.com.fid.Timeout = timeouttime;
+[resultRead, numRead] = fread(handles.com.fid, bytesize);
+handles.com.fid.Timeout = prevTimeout;
+
 
 resultRead = arrayfun(@char, resultRead);
-resultRead = resultRead' % take the transpose
+resultRead = resultRead'; % take the transpose
 
 % strip of linefeeds
-indx = find(resultRead==char(13) | resultRead==char(10) | resultRead==' ');
+indx = find(resultRead==char(13) | resultRead==char(10));
 resultRead(indx) = [];
 
 % turn the numbers received into ascii corresponding characters
 if ~isempty(resultRead)
-    % print it in the read_edit area
-    oldRead = get(handles.read_edit, 'String');
-    set(handles.read_edit, 'String', [oldRead, resultRead]);
+%     % print it in the read_edit area
+%     oldRead = get(handles.read_edit, 'String');
+%     set(handles.read_edit, 'String', [oldRead, resultRead]);
+     set(handles.read_edit, 'String', resultRead);
 end
 
 
@@ -791,3 +822,41 @@ function clcread_smenu_Callback(hObject, eventdata, handles)
 
 % clears the Serial read text edit area
 set(handles.read_edit, 'String', '');
+
+
+% --- Executes on key press with focus on pushbutton9 and none of its controls.
+function pushbutton9_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  structure with the following fields (see UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in down_btn.
+function down_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to down_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in right_btn.
+function right_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to right_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in up_btn.
+function up_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to up_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in left_btn.
+function left_btn_Callback(hObject, eventdata, handles)
+% hObject    handle to left_btn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

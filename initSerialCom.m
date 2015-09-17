@@ -4,7 +4,7 @@ function out = initSerialCom(portNum, loghandle)
  
 BaudRate = 9600;
 timeouttime = 0.1;
-s1 = serial(portNum, 'BaudRate', BaudRate, 'Timeout',timeouttime);
+s1 = serial(portNum, 'BaudRate', BaudRate, 'Timeout',timeouttime)
 % s1 = serial(portNum, 'BaudRate', BaudRate);
 fopen(s1);
 
