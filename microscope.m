@@ -64,6 +64,13 @@ handles.output = hObject;
 
 %--- General Initialization
 clc;
+%include the subScripts and figures folders
+if ~folderInPath('./figures')
+    addpath('./figures');
+end
+if ~folderInPath('./supScripts')
+    addpath('./supScripts');
+end
 
 % Clear the 'read/write to serial' boxes
 set(handles.read_edit, 'String', '');
