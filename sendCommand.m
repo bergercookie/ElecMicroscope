@@ -17,5 +17,5 @@ if strcmp(com.mode, 'serial')
     fprintf(com.fid, msg_serial);
 end
 
-% add to the log windows
-logCommand(msg, thehandle);
+% add to the log window - send the communication mode too.
+logCommand(msg, thehandle, com.mode);

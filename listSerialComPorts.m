@@ -17,4 +17,5 @@ else
     error('listSerialComPorts:else', 'Function notimplemented in the specified operating system');
 end
 
+ser_ports(end+1)  = {'loopback://'};
 thelist = ser_ports;
