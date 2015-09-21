@@ -4,13 +4,15 @@ function out = initSerialCom(portNum, loghandle)
  
 BaudRate = 9600;
 timeouttime = 0.1;
-s1 = serial(portNum, 'BaudRate', BaudRate, 'Timeout',timeouttime)
+s1 = serial(portNum, 'BaudRate', BaudRate, 'Timeout',timeouttime);
 % s1 = serial(portNum, 'BaudRate', BaudRate);
 fopen(s1);
 
 com.port = portNum;
 com.mode = 'serial';
-com.endchar = '\n';
+
+% matlab includes the endchar by default when new serial object is created
+com.endchar = ''; 
 com.fid = s1;
 com.initialized = 1;
 

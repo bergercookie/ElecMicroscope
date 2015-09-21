@@ -8,7 +8,7 @@ if nargin == 0;
     theformat = '.tiff';
     thepath = '.';
 elseif nargin == 1
-    thepath = '.'
+    thepath = '.';
 % elseif nargin > 2
 %     error('init_capturestruct:elseif', 'Number of arguements exceeds the limit set');
 end

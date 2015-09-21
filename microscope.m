@@ -78,8 +78,9 @@ set(handles.write_edit, 'String', '');
 
 %--- Communication Properties
 com.mode = 'loopback'; % 'loopback' / 'serial'
-com.initialized = 0; %not initialized yet..
 handles.com = com;
+% mode = '/dev/tty.usbmodemfd121';
+% handles.com = initSerialCom(mode, handles.logwindow);
 
 %--- Logo
 % set(hObject, 'Color', [1 1 1]) % set the background color of the GUI
@@ -658,7 +659,7 @@ offValue = get(handles.lampoff_btn, 'Value'); % just to be complete.
 
 try
     if onValue
-        sendCommand('lampon', handles.com, handles.logwindow);
+        sendCommand('lampon', handles.com, handles.logwindow)
     else
         sendCommand('lampoff', handles.com, handles.logwindow);
     end
@@ -706,15 +707,16 @@ pos3 = get(handles.pos3_btn, 'Value');
 pos4 = get(handles.pos4_btn, 'Value');
 
 if pos1
-    sendCommand('position1', handles.com, handles.logwindow);
+    changefilterpos('1', handles.com, handles.logwindow);
 elseif pos2
-    sendCommand('position2', handles.com, handles.logwindow);
+    changefilterpos('2', handles.com, handles.logwindow);
 elseif pos3
-    sendCommand('position3', handles.com, handles.logwindow);
+    changefilterpos('3', handles.com, handles.logwindow);
 elseif pos4
-    sendCommand('position4', handles.com, handles.logwindow);
+    changefilterpos('4', handles.com, handles.logwindow);
 else
-    error('filterset_panel:decidingPos', 'One of the Position Radiobuttoms must be switched on')
+    error('filterset_panel:decidingPos', ...
+        'One of the Position Radiobuttoms must be switched on');
 end
 
 

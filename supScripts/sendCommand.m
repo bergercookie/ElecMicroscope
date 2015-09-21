@@ -1,4 +1,4 @@
-function sendCommand(msg, com, thehandle)
+function sendCommand(msg, com, logWindow)
 %SENDCOMMAND Main serial communication mechanism
 % Depending on the communication mode in which I am running the command
 % (loopback / serial) SENDCOMMAND either sends the command to the serial
@@ -18,4 +18,4 @@ if strcmp(com.mode, 'serial')
 end
 
 % add to the log window - send the communication mode too.
-logCommand(msg, thehandle, com.mode);
+logCommand(msg, logWindow, com.mode);

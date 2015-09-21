@@ -9,7 +9,7 @@ function [devNames, devIds] = listAvailCameras()
 
 % get  available imaq devices
 adaptors = imaqhwinfo('macvideo');
-devices = adaptors.DeviceInfo
+devices = adaptors.DeviceInfo;
 
 devIds = {devices.DeviceID};
 devNames = {devices.DeviceName};
