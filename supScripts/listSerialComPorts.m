@@ -14,7 +14,8 @@ if strcmp(thesys(1:4), 'MACI')
     ser_ports = strsplit(ser_ports, ' ');
     
 else
-    error('listSerialComPorts:else', 'Function notimplemented in the specified operating system');
+    ser_ports = getAvailableComPorts();
+%     error('listSerialComPorts:else', 'Function notimplemented in the specified operating system');
 end
 
 ser_ports(end+1)  = {'loopback://'};

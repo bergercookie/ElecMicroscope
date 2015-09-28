@@ -1,5 +1,6 @@
 function permstore(capture)
 % PERMSTORE Store the images in the capture structure permanently
+% todo, fix it for windows systems / --> \
 
 iend = capture.i - 1; % always store + 1
 theformat = capture.format;

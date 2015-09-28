@@ -193,7 +193,6 @@ if ~isempty(selection)
             if strcmp(port, 'loopback://')
                 handles.com.mode = 'loopback';
             else
-                fprintf(1, 'kalimera\n');
                 handles.com = initSerialCom(port, handles.logwindow);
                 % log message
                 msg = sprintf('Changed Arduino port to %s', port);
@@ -515,7 +514,7 @@ function selectcam_smenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-[devNames, devIds] = listAvailCameras();
+[devNames, devIds] = listAvailCameras(handles.camera);
 [selection, ok] = listdlg('PromptString','Select camera:',...
     'SelectionMode','single',...
     'Name', 'Camera Selection', ...
