@@ -3,14 +3,20 @@ function permstore(capture)
 
 iend = capture.i - 1; % always store + 1
 theformat = capture.format;
+sep = capture.sep;
+
+% fprintf(1, 'In permstore: sep = %s\n', sep);
+
 
 for i=1:iend
     fname = capture.cells{i, 2};
     path = capture.path;
-    fname = [path, '/', fname, theformat];
+    fname = [path, sep, fname, theformat];
+    fname(3:end) = strrep(fname(3:end), ':', '_');
     img =capture.cells{i, 1};
     
-    try 
+    try
+%         fprintf(1, 'Name = %s\n', fname);
         imwrite(img, fname);
     catch MExc
         fprintf(1, ['permstore.m> Could not save an image correctly\n\t', ...

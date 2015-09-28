@@ -1,35 +1,35 @@
-function varargout = microscope(varargin)
-% MICROSCOPE MATLAB code for microscope.fig
-%      MICROSCOPE, by itself, creates a new MICROSCOPE or raises the existing
+function varargout = microscope_bkup(varargin)
+% MICROSCOPE_BKUP MATLAB code for microscope_bkup.fig
+%      MICROSCOPE_BKUP, by itself, creates a new MICROSCOPE_BKUP or raises the existing
 %      singleton*.
 %
-%      H = MICROSCOPE returns the handle to a new MICROSCOPE or the handle to
+%      H = MICROSCOPE_BKUP returns the handle to a new MICROSCOPE_BKUP or the handle to
 %      the existing singleton*.
 %
-%      MICROSCOPE('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in MICROSCOPE.M with the given input arguments.
+%      MICROSCOPE_BKUP('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in MICROSCOPE_BKUP.M with the given input arguments.
 %
-%      MICROSCOPE('Property','Value',...) creates a new MICROSCOPE or raises the
+%      MICROSCOPE_BKUP('Property','Value',...) creates a new MICROSCOPE_BKUP or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before microscope_OpeningFcn gets called.  An
+%      applied to the GUI before microscope_bkup_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to microscope_OpeningFcn via varargin.
+%      stop.  All inputs are passed to microscope_bkup_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help microscope
+% Edit the above text to modify the response to help microscope_bkup
 
-% Last Modified by GUIDE v2.5 28-Sep-2015 21:51:14
+% Last Modified by GUIDE v2.5 28-Sep-2015 20:17:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @microscope_OpeningFcn, ...
-                   'gui_OutputFcn',  @microscope_OutputFcn, ...
+                   'gui_OpeningFcn', @microscope_bkup_OpeningFcn, ...
+                   'gui_OutputFcn',  @microscope_bkup_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,35 +44,26 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before microscope is made visible.
-function microscope_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before microscope_bkup is made visible.
+function microscope_bkup_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to microscope (see VARARGIN)
+% varargin   command line arguments to microscope_bkup (see VARARGIN)
 
 %--- General Initialization
 
-% Choose default command line output for microscope
+% Choose default command line output for microscope_bkup
 handles.output = hObject;
 
-% UIWAIT makes microscope wait for user response (see UIRESUME)
+% UIWAIT makes microscope_bkup wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
+
+
 
 %--- General Initialization
 clc;
-
-%---OS-configuration
-if strfind(computer, 'WIN')
-    handles.os = 'windows';
-    handles.camera.adaptor = 'winvideo';
-elseif strfind(computer, 'MAC')
-    handles.os = 'mac';
-    handles.camera.adaptor = 'macvideo';
-end
-
-
 %include the subScripts and figures folders
 if ~folderInPath('./figures')
     addpath('./figures');
@@ -91,9 +82,9 @@ handles.com = com;
 % mode = '/dev/tty.usbmodemfd121';
 % handles.com = initSerialCom(mode, handles.logwindow);
 
-% %--- Logo
-% % set(hObject, 'Color', [1 1 1]) % set the background color of the GUI
-% include_image(handles.axes1, 'images/logo/logo_ntua3.jpg');
+%--- Logo
+% set(hObject, 'Color', [1 1 1]) % set the background color of the GUI
+include_image(handles.axes1, 'images/logo/logo_ntua3.jpg');
 
 %--- Camera Panel
 
@@ -105,7 +96,7 @@ handles.capture = init_capturestruct('.tiff', '.');
 %----- Initialize video with default camera
 handles.camera.Id = 1;
 handles.camera = initialize_video(handles.camera_axes, ...
-    handles.camera);
+    handles.camera.Id );
 handles.camera.Name = 'FaceTime HD Camera (Built-in)';
 
 %----- plot XY platform
@@ -128,7 +119,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = microscope_OutputFcn(hObject, eventdata, handles) 
+function varargout = microscope_bkup_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -201,11 +192,8 @@ if ~isempty(selection)
         if ok % if selection is indeed made..
             if strcmp(port, 'loopback://')
                 handles.com.mode = 'loopback';
-                % log message
-                msg = sprintf('Changed to %s mode', handles.com.mode);
-                logCommand(msg, handles.logwindow);
             else
-%                 fprintf(1, 'kalimera\n');
+                fprintf(1, 'kalimera\n');
                 handles.com = initSerialCom(port, handles.logwindow);
                 % log message
                 msg = sprintf('Changed Arduino port to %s', port);
@@ -373,7 +361,7 @@ handles.capture = tempstore(img, handles.capture);
 
 % log message
 msg = sprintf('Image successfuly taken');
-logCommand(msg, handles.logwindow)
+logCommand(msg, handles.logwindow);
 
 
 % Update handles structure
@@ -395,7 +383,7 @@ if handles.camera.on == 1
     logCommand(msg, handles.logwindow);
 
 else
-    handles.camera = initialize_video(handles.camera_axes, handles.camera);
+    handles.camera = initialize_video(handles.camera_axes, handles.camera.Id);
     
     % log message
     msg = sprintf('Camera turned on.');
@@ -527,7 +515,7 @@ function selectcam_smenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-[devNames, devIds] = listAvailCameras(handles.camera);
+[devNames, devIds] = listAvailCameras();
 [selection, ok] = listdlg('PromptString','Select camera:',...
     'SelectionMode','single',...
     'Name', 'Camera Selection', ...
@@ -543,9 +531,8 @@ if ~isempty(selection)
     Id = devIds{selection};
     if  Id ~= handles.camera.Id
         %initialize video using the given Device ID
-        handles.camera.Id = Id;
         handles.camera = initialize_video(handles.camera_axes, ...
-            handles.camera);
+            Id);
         handles.camera.Name = name;
         
         % log message
@@ -882,34 +869,3 @@ function left_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to left_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-
-function edit5_Callback(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit5 as text
-%        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes during object creation, after setting all properties.
-function figure1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
- 

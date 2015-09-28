@@ -22,7 +22,7 @@ function varargout = microscope(varargin)
 
 % Edit the above text to modify the response to help microscope
 
-% Last Modified by GUIDE v2.5 28-Sep-2015 21:51:14
+% Last Modified by GUIDE v2.5 17-Sep-2015 15:43:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,19 +60,10 @@ handles.output = hObject;
 % UIWAIT makes microscope wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+
+
 %--- General Initialization
 clc;
-
-%---OS-configuration
-if strfind(computer, 'WIN')
-    handles.os = 'windows';
-    handles.camera.adaptor = 'winvideo';
-elseif strfind(computer, 'MAC')
-    handles.os = 'mac';
-    handles.camera.adaptor = 'macvideo';
-end
-
-
 %include the subScripts and figures folders
 if ~folderInPath('./figures')
     addpath('./figures');
@@ -91,9 +82,9 @@ handles.com = com;
 % mode = '/dev/tty.usbmodemfd121';
 % handles.com = initSerialCom(mode, handles.logwindow);
 
-% %--- Logo
-% % set(hObject, 'Color', [1 1 1]) % set the background color of the GUI
-% include_image(handles.axes1, 'images/logo/logo_ntua3.jpg');
+%--- Logo
+% set(hObject, 'Color', [1 1 1]) % set the background color of the GUI
+include_image(handles.axes1, 'images/logo/logo_ntua3.jpg');
 
 %--- Camera Panel
 
@@ -105,7 +96,7 @@ handles.capture = init_capturestruct('.tiff', '.');
 %----- Initialize video with default camera
 handles.camera.Id = 1;
 handles.camera = initialize_video(handles.camera_axes, ...
-    handles.camera);
+    handles.camera.Id );
 handles.camera.Name = 'FaceTime HD Camera (Built-in)';
 
 %----- plot XY platform
@@ -201,11 +192,8 @@ if ~isempty(selection)
         if ok % if selection is indeed made..
             if strcmp(port, 'loopback://')
                 handles.com.mode = 'loopback';
-                % log message
-                msg = sprintf('Changed to %s mode', handles.com.mode);
-                logCommand(msg, handles.logwindow);
             else
-%                 fprintf(1, 'kalimera\n');
+                fprintf(1, 'kalimera\n');
                 handles.com = initSerialCom(port, handles.logwindow);
                 % log message
                 msg = sprintf('Changed Arduino port to %s', port);
@@ -373,7 +361,7 @@ handles.capture = tempstore(img, handles.capture);
 
 % log message
 msg = sprintf('Image successfuly taken');
-logCommand(msg, handles.logwindow)
+logCommand(msg, handles.logwindow);
 
 
 % Update handles structure
@@ -395,7 +383,7 @@ if handles.camera.on == 1
     logCommand(msg, handles.logwindow);
 
 else
-    handles.camera = initialize_video(handles.camera_axes, handles.camera);
+    handles.camera = initialize_video(handles.camera_axes, handles.camera.Id);
     
     % log message
     msg = sprintf('Camera turned on.');
@@ -527,7 +515,7 @@ function selectcam_smenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-[devNames, devIds] = listAvailCameras(handles.camera);
+[devNames, devIds] = listAvailCameras();
 [selection, ok] = listdlg('PromptString','Select camera:',...
     'SelectionMode','single',...
     'Name', 'Camera Selection', ...
@@ -543,9 +531,8 @@ if ~isempty(selection)
     Id = devIds{selection};
     if  Id ~= handles.camera.Id
         %initialize video using the given Device ID
-        handles.camera.Id = Id;
         handles.camera = initialize_video(handles.camera_axes, ...
-            handles.camera);
+            Id);
         handles.camera.Name = name;
         
         % log message
@@ -882,34 +869,3 @@ function left_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to left_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-
-function edit5_Callback(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit5 as text
-%        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes during object creation, after setting all properties.
-function figure1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
- 
