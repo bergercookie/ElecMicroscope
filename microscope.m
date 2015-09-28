@@ -621,8 +621,8 @@ selected = contents{get(hObject,'Value')}
 % parse the contents cell string
 pattern = '\d*x\d*';
 stringFound = regexp(selected, pattern, 'match')';
-stringFound = stringFound{1} % initially returned as cell
-Xpos = strfind(stringFound, 'x') % position of x in string
+stringFound = stringFound{1}; % initially returned as cell
+Xpos = strfind(stringFound, 'x'); % position of x in string
 
 % get xNum, yNum
 handles.holes.xNum = str2num(stringFound(1:Xpos-1));
