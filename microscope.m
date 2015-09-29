@@ -22,7 +22,7 @@ function varargout = microscope(varargin)
 
 % Edit the above text to modify the response to help microscope
 
-% Last Modified by GUIDE v2.5 28-Sep-2015 21:51:14
+% Last Modified by GUIDE v2.5 29-Sep-2015 16:05:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -101,6 +101,7 @@ handles.com = com;
 % 3 fields: maxi, cells, i
 % cells -  2 subfields: img, datetime
 handles.capture = init_capturestruct('.tiff', '.');
+handles.boolSaveNow = 0;
 
 %----- Initialize video with default camera
 handles.camera.Id = 1;
@@ -333,16 +334,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-% --- Executes on slider movement.
-function slider1_Callback(hObject, eventdata, handles)
-% hObject    handle to slider1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
 % --- Executes on button press in doit_btn.
 function doit_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to doit_btn (see GCBO)
@@ -365,6 +356,9 @@ function shoot_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future versiqon of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% todo - implement the 'saveNow_smenu'.
+% flag in the handles --> boolSaveNow (boolean)
+
 img = getsnapshot(handles.camera.vid);
 % figure(); imshow(img);
 
@@ -375,6 +369,11 @@ handles.capture = tempstore(img, handles.capture);
 msg = sprintf('Image successfuly taken');
 logCommand(msg, handles.logwindow)
 
+% fprintf(1, 'Inside Shoot function, boolSaveNow = %d\n', handles.boolSaveNow);
+if handles.boolSaveNow == 1
+%     fprintf(1, 'microscope: Inside the boolSaveNow if\n');
+    saveall_btn_Callback(hObject, eventdata, handles)
+end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -411,6 +410,7 @@ function saveall_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% fprintf('Inside the saveall_btn_Callback\n');
 permstore(handles.capture);
 numimagessaved = handles.capture.i - 1;
 
@@ -444,7 +444,8 @@ function clearall_btn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % clean buffer of images until now
-handles.capture = init_capturestruct();
+handles.capture = init_capturestruct(handles.capture.format, ...
+    handles.capture.path);
 % log message
 msg = sprintf('Cleared temp. buffer of images');
 logCommand(msg, handles.logwindow);
@@ -740,6 +741,8 @@ function serialwrite_btn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 try 
+
+% [WARNING] I don't use the sendCommand for the serialwrite_btn
 com2send = get(handles.write_edit, 'String');
 fprintf(handles.com.fid, com2send); % send the command in raw form
 logCommand(com2send, handles.logwindow, 'raw');
@@ -912,4 +915,50 @@ function figure1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
- 
+
+
+
+% --------------------------------------------------------------------
+function saveNow_smenu_Callback(hObject, eventdata, handles)
+% hObject    handle to saveNow_smenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% if user presses the 'Save Instantly' Button the 'Clear all' and 'Save
+% all' buttons are disabled and shoot changes mode to 'savenow'.
+% todo - implement this
+
+status = get(handles.saveNow_smenu, 'Checked')
+
+% toogle the check
+if strcmp(status, 'off')
+    % ACTIVATE saveNow_smenu
+    
+    % global flag
+    handles.boolSaveNow = 1;
+    
+    % actions
+    set(handles.saveNow_smenu, 'Checked', 'on');
+    set(handles.saveall_btn, 'Enable', 'off');
+    set(handles.clearall_btn, 'Enable', 'off');
+
+    % save all pictures in the buffer - safety measure
+    saveall_btn_Callback(hObject, eventdata, handles);
+    
+elseif strcmp(status, 'on')
+    % DEACTIVATE saveNow_smenu
+    
+    % global flag
+    handles.boolSaveNow = 0;
+    
+    set(handles.saveNow_smenu, 'Checked', 'off');
+    set(handles.saveall_btn, 'Enable', 'on');
+    set(handles.clearall_btn, 'Enable', 'on');
+    
+else
+    error('saveNow_smenu_Callback', 'saveNow_smenu status not recognised, check conditions');
+
+end
+
+% Update handles structure
+guidata(hObject, handles);
