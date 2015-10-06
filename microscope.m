@@ -22,7 +22,7 @@ function varargout = microscope(varargin)
 
 % Edit the above text to modify the response to help microscope
 
-% Last Modified by GUIDE v2.5 07-Oct-2015 01:04:01
+% Last Modified by GUIDE v2.5 07-Oct-2015 01:35:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -1032,3 +1032,14 @@ end
 
 % Update handles structure
 guidata(hObject, handles);
+
+
+% --------------------------------------------------------------------
+function help_smenu_Callback(hObject, eventdata, handles)
+% hObject    handle to help_smenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+msgbox({'OpenElec2000', ...
+    'For help regarding the usage refer to http://bergercookie.github.io/Projects/'}, ...
+    'Help Page');
