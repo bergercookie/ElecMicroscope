@@ -11,6 +11,9 @@ function logCommand(msg, thehandle, ad)
 %   the main script "microscope.m" after the sendCommand 
 % (or the logCommand respectively) is run
 
+% by default it prints the message
+donotshow = false;
+
 if nargin == 2
     % format the message
     msg = ['>', timestr(), ' - ', msg];
@@ -26,9 +29,13 @@ elseif nargin == 3
         msg  = ['[LOOP]', '>', timestr(), ' - ', msg];
     elseif strcmp(ad, 'raw')
         msg  = ['[RAW]', '>', timestr(), ' - ', msg];
+    elseif strcmp(ad, 'dontshow')
+        donotshow = true
     end
 end
 
-% update the message list
-oldmsgs = cellstr(get(thehandle,'String'));
-set(thehandle,'String',[{msg};oldmsgs]);
+if ~donotshow
+    % update the message list
+    oldmsgs = cellstr(get(thehandle,'String'));
+    set(thehandle,'String',[{msg};oldmsgs]);
+end

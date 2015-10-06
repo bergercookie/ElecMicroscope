@@ -22,7 +22,7 @@ function varargout = microscope(varargin)
 
 % Edit the above text to modify the response to help microscope
 
-% Last Modified by GUIDE v2.5 29-Sep-2015 16:05:14
+% Last Modified by GUIDE v2.5 07-Oct-2015 01:04:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,6 +53,13 @@ function microscope_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to microscope (see VARARGIN)
 
 %--- General Initialization
+
+% % nickkouk 20151006
+% added global variables goddammit...
+% global horizSlprev verticalSlprev
+% 
+% horizSlprev = -1;
+% verticalSlprev = -1; % not a valid value, should be changed at the first run
 
 % Choose default command line output for microscope
 handles.output = hObject;
@@ -116,6 +123,9 @@ handles.holes.xNum = 12;
 handles.holes.yNum = 8;
 makePlatform(handles.xyplat_axes, handles.holes);
 
+% Arrow names list
+handles.arrows = {'uparrow', 'downarrow', 'leftarrow', 'rightarrow'};
+handles.keypressed = 0;
 
 % log message
 % clear it at first 
@@ -123,9 +133,27 @@ set(handles.logwindow, 'String', '');
 msg = 'User Interface started successfully';
 logCommand(msg, handles.logwindow);
 
+% % todo - change this if possible 20151006
+% % ///////////////////////////
+% com4sliders = handles.com;
+% 
+% % vListener = addlistener(handles.verticalSl,'ContinuousValueChange',...
+% %     @(src,event) verticalSliderChanged(src, event, ...
+% %     handles.com, handles.logwindow));
+% % setappdata(handles.verticalSl,'sliderListener', vListener);
+% vListener = addlistener(handles.verticalSl,'ContinuousValueChange',...
+%     @(src,event) verticalSliderChanged(src, event, handles.logwindow));
+% setappdata(handles.verticalSl,'sliderListener', vListener);
+% 
+% hListener = addlistener(handles.horizSl,'ContinuousValueChange', ...
+%     @(src,event) horizSliderChanged(src, event, ...
+%     handles.com, handles.logwindow));
+% setappdata(handles.verticalSl,'sliderListener', hListener);
+
+% ================================
+
 % Update handles structure
 guidata(hObject, handles);
-
 
 
 % --- Outputs from this function are returned to the command line.
@@ -189,6 +217,9 @@ function port_smenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% not in use with the current setup
+% global com4sliders
+
 str = listSerialComPorts();
 [selection, ok] = listdlg('PromptString','Select the port on which the Arduino is on:',...
     'SelectionMode','single',...
@@ -236,6 +267,8 @@ if ~isempty(selection)
         end
     end
 end
+
+% com4sliders = handles.com;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -848,17 +881,6 @@ function clcread_smenu_Callback(hObject, eventdata, handles)
 % clears the Serial read text edit area
 set(handles.read_edit, 'String', '');
 
-
-% --- Executes on key press with focus on pushbutton9 and none of its controls.
-function pushbutton9_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to pushbutton9 (see GCBO)
-% eventdata  structure with the following fields (see UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-
-
 % --- Executes on button press in down_btn.
 function down_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to down_btn (see GCBO)
@@ -958,6 +980,54 @@ elseif strcmp(status, 'on')
 else
     error('saveNow_smenu_Callback', 'saveNow_smenu status not recognised, check conditions');
 
+end
+
+% Update handles structure
+guidata(hObject, handles);
+
+% --- Executes on key release with focus on figure1 or any of its controls.
+function figure1_WindowKeyReleaseFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was released, in lower case
+%	Character: character interpretation of the key(s) that was released
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) released
+% handles    structure with handles and user data (see GUIDATA)
+%
+% function sends the release signal
+key = eventdata.Key;
+
+% if strmatch(key, handles.arrows)
+if any(strcmp(key, handles.arrows))
+%     key = strrep(key, 'arrow', '');
+%     key = [key, '_', 'release'];
+%     sendCommand(upper(key), handles.com, handles.logwindow);
+    sendCommand('RELEASE', handles.com, handles.logwindow);
+    handles.keypressed = 0; % key released.. now it can be pressed again
+end
+
+% Update handles structure
+guidata(hObject, handles);
+
+% --- Executes on key press with focus on figure1 or any of its controls.
+function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+%
+% function should send only onecommand when the key is pressed (don't care
+% about the duration of the press).
+key = eventdata.Key;
+
+% if strmatch(key, handles.arrows) && ~handles.keypressed
+if any(strcmp(key, handles.arrows)) &&  ~handles.keypressed
+
+    key = strrep(key, 'arrow', '');
+    sendCommand(upper(key), handles.com, handles.logwindow);
+    handles.keypressed = 1; % key already sent.. no more are needed
 end
 
 % Update handles structure
