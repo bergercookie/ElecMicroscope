@@ -1,7 +1,6 @@
 function thelist = listSerialComPorts()
 % LISTSRIALCOMPORTS list of available communication serial ports to choose
 % from. The list is returned in a cell array.
-% The function is os-dependent, currently implemented only in OSX systems
 
 
 thesys = computer;
@@ -12,11 +11,19 @@ if strcmp(thesys(1:4), 'MACI')
     ser_ports = strrep(ser_ports, '/dev/', ' /dev/');
     ser_ports = ser_ports(2:end);
     ser_ports = strsplit(ser_ports, ' ');
-    
+elseif strfind(thesys, 'WIN')
+    ser_ports = getAvailableComPorts();
+%     ser_ports = findserial_win();
+%     ser_ports = ser_ports';
 else
     ser_ports = getAvailableComPorts();
 %     error('listSerialComPorts:else', 'Function notimplemented in the specified operating system');
 end
 
+% if ~length(ser_ports) == 1 || ~isempty(ser_ports{1})
 ser_ports(end+1)  = {'loopback://'};
+% else
+%     ser_ports = {'loopback://'};
+% end
+
 thelist = ser_ports;

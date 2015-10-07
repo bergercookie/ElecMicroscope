@@ -22,7 +22,7 @@ function varargout = microscope(varargin)
 
 % Edit the above text to modify the response to help microscope
 
-% Last Modified by GUIDE v2.5 07-Oct-2015 01:35:21
+% Last Modified by GUIDE v2.5 17-Sep-2015 15:43:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,32 +54,16 @@ function microscope_OpeningFcn(hObject, eventdata, handles, varargin)
 
 %--- General Initialization
 
-% % nickkouk 20151006
-% added global variables goddammit...
-% global horizSlprev verticalSlprev
-% 
-% horizSlprev = -1;
-% verticalSlprev = -1; % not a valid value, should be changed at the first run
-
 % Choose default command line output for microscope
 handles.output = hObject;
 
 % UIWAIT makes microscope wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+
+
 %--- General Initialization
 clc;
-
-%---OS-configuration
-if strfind(computer, 'WIN')
-    handles.os = 'windows';
-    handles.camera.adaptor = 'winvideo';
-elseif strfind(computer, 'MAC')
-    handles.os = 'mac';
-    handles.camera.adaptor = 'macvideo';
-end
-
-
 %include the subScripts and figures folders
 if ~folderInPath('./figures')
     addpath('./figures');
@@ -98,9 +82,9 @@ handles.com = com;
 % mode = '/dev/tty.usbmodemfd121';
 % handles.com = initSerialCom(mode, handles.logwindow);
 
-% %--- Logo
-% % set(hObject, 'Color', [1 1 1]) % set the background color of the GUI
-% include_image(handles.axes1, 'images/logo/logo_ntua3.jpg');
+%--- Logo
+% set(hObject, 'Color', [1 1 1]) % set the background color of the GUI
+include_image(handles.axes1, 'images/logo/logo_ntua3.jpg');
 
 %--- Camera Panel
 
@@ -108,12 +92,11 @@ handles.com = com;
 % 3 fields: maxi, cells, i
 % cells -  2 subfields: img, datetime
 handles.capture = init_capturestruct('.tiff', '.');
-handles.boolSaveNow = 0;
 
 %----- Initialize video with default camera
 handles.camera.Id = 1;
 handles.camera = initialize_video(handles.camera_axes, ...
-    handles.camera);
+    handles.camera.Id );
 handles.camera.Name = 'FaceTime HD Camera (Built-in)';
 
 %----- plot XY platform
@@ -123,9 +106,6 @@ handles.holes.xNum = 12;
 handles.holes.yNum = 8;
 makePlatform(handles.xyplat_axes, handles.holes);
 
-% Arrow names list
-handles.arrows = {'uparrow', 'downarrow', 'leftarrow', 'rightarrow'};
-handles.keypressed = 0;
 
 % log message
 % clear it at first 
@@ -133,27 +113,9 @@ set(handles.logwindow, 'String', '');
 msg = 'User Interface started successfully';
 logCommand(msg, handles.logwindow);
 
-% % todo - change this if possible 20151006
-% % ///////////////////////////
-% com4sliders = handles.com;
-% 
-% % vListener = addlistener(handles.verticalSl,'ContinuousValueChange',...
-% %     @(src,event) verticalSliderChanged(src, event, ...
-% %     handles.com, handles.logwindow));
-% % setappdata(handles.verticalSl,'sliderListener', vListener);
-% vListener = addlistener(handles.verticalSl,'ContinuousValueChange',...
-%     @(src,event) verticalSliderChanged(src, event, handles.logwindow));
-% setappdata(handles.verticalSl,'sliderListener', vListener);
-% 
-% hListener = addlistener(handles.horizSl,'ContinuousValueChange', ...
-%     @(src,event) horizSliderChanged(src, event, ...
-%     handles.com, handles.logwindow));
-% setappdata(handles.verticalSl,'sliderListener', hListener);
-
-% ================================
-
 % Update handles structure
 guidata(hObject, handles);
+
 
 
 % --- Outputs from this function are returned to the command line.
@@ -217,9 +179,6 @@ function port_smenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% not in use with the current setup
-% global com4sliders
-
 str = listSerialComPorts();
 [selection, ok] = listdlg('PromptString','Select the port on which the Arduino is on:',...
     'SelectionMode','single',...
@@ -233,14 +192,8 @@ if ~isempty(selection)
         if ok % if selection is indeed made..
             if strcmp(port, 'loopback://')
                 handles.com.mode = 'loopback';
-                % log message
-                msg = sprintf('Changed to %s mode', handles.com.mode);
-                logCommand(msg, handles.logwindow);
             else
-<<<<<<< HEAD
-=======
-%                 fprintf(1, 'kalimera\n');
->>>>>>> windows_gui_testing
+                fprintf(1, 'kalimera\n');
                 handles.com = initSerialCom(port, handles.logwindow);
                 % log message
                 msg = sprintf('Changed Arduino port to %s', port);
@@ -270,8 +223,6 @@ if ~isempty(selection)
         end
     end
 end
-
-% com4sliders = handles.com;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -370,6 +321,16 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+
+% --- Executes on slider movement.
+function slider1_Callback(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
 % --- Executes on button press in doit_btn.
 function doit_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to doit_btn (see GCBO)
@@ -392,9 +353,6 @@ function shoot_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future versiqon of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% todo - implement the 'saveNow_smenu'.
-% flag in the handles --> boolSaveNow (boolean)
-
 img = getsnapshot(handles.camera.vid);
 % figure(); imshow(img);
 
@@ -403,13 +361,8 @@ handles.capture = tempstore(img, handles.capture);
 
 % log message
 msg = sprintf('Image successfuly taken');
-logCommand(msg, handles.logwindow)
+logCommand(msg, handles.logwindow);
 
-% fprintf(1, 'Inside Shoot function, boolSaveNow = %d\n', handles.boolSaveNow);
-if handles.boolSaveNow == 1
-%     fprintf(1, 'microscope: Inside the boolSaveNow if\n');
-    saveall_btn_Callback(hObject, eventdata, handles)
-end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -430,7 +383,7 @@ if handles.camera.on == 1
     logCommand(msg, handles.logwindow);
 
 else
-    handles.camera = initialize_video(handles.camera_axes, handles.camera);
+    handles.camera = initialize_video(handles.camera_axes, handles.camera.Id);
     
     % log message
     msg = sprintf('Camera turned on.');
@@ -446,7 +399,6 @@ function saveall_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% fprintf('Inside the saveall_btn_Callback\n');
 permstore(handles.capture);
 numimagessaved = handles.capture.i - 1;
 
@@ -480,8 +432,7 @@ function clearall_btn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % clean buffer of images until now
-handles.capture = init_capturestruct(handles.capture.format, ...
-    handles.capture.path);
+handles.capture = init_capturestruct();
 % log message
 msg = sprintf('Cleared temp. buffer of images');
 logCommand(msg, handles.logwindow);
@@ -564,7 +515,7 @@ function selectcam_smenu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-[devNames, devIds] = listAvailCameras(handles.camera);
+[devNames, devIds] = listAvailCameras();
 [selection, ok] = listdlg('PromptString','Select camera:',...
     'SelectionMode','single',...
     'Name', 'Camera Selection', ...
@@ -580,9 +531,8 @@ if ~isempty(selection)
     Id = devIds{selection};
     if  Id ~= handles.camera.Id
         %initialize video using the given Device ID
-        handles.camera.Id = Id;
         handles.camera = initialize_video(handles.camera_axes, ...
-            handles.camera);
+            Id);
         handles.camera.Name = name;
         
         % log message
@@ -777,8 +727,6 @@ function serialwrite_btn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 try 
-
-% [WARNING] I don't use the sendCommand for the serialwrite_btn
 com2send = get(handles.write_edit, 'String');
 fprintf(handles.com.fid, com2send); % send the command in raw form
 logCommand(com2send, handles.logwindow, 'raw');
@@ -884,6 +832,17 @@ function clcread_smenu_Callback(hObject, eventdata, handles)
 % clears the Serial read text edit area
 set(handles.read_edit, 'String', '');
 
+
+% --- Executes on key press with focus on pushbutton9 and none of its controls.
+function pushbutton9_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  structure with the following fields (see UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+
 % --- Executes on button press in down_btn.
 function down_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to down_btn (see GCBO)
@@ -910,139 +869,3 @@ function left_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to left_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-
-function edit5_Callback(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit5 as text
-%        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes during object creation, after setting all properties.
-function figure1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-
-% --------------------------------------------------------------------
-function saveNow_smenu_Callback(hObject, eventdata, handles)
-% hObject    handle to saveNow_smenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% if user presses the 'Save Instantly' Button the 'Clear all' and 'Save
-% all' buttons are disabled and shoot changes mode to 'savenow'.
-% todo - implement this
-
-status = get(handles.saveNow_smenu, 'Checked')
-
-% toogle the check
-if strcmp(status, 'off')
-    % ACTIVATE saveNow_smenu
-    
-    % global flag
-    handles.boolSaveNow = 1;
-    
-    % actions
-    set(handles.saveNow_smenu, 'Checked', 'on');
-    set(handles.saveall_btn, 'Enable', 'off');
-    set(handles.clearall_btn, 'Enable', 'off');
-
-    % save all pictures in the buffer - safety measure
-    saveall_btn_Callback(hObject, eventdata, handles);
-    
-elseif strcmp(status, 'on')
-    % DEACTIVATE saveNow_smenu
-    
-    % global flag
-    handles.boolSaveNow = 0;
-    
-    set(handles.saveNow_smenu, 'Checked', 'off');
-    set(handles.saveall_btn, 'Enable', 'on');
-    set(handles.clearall_btn, 'Enable', 'on');
-    
-else
-    error('saveNow_smenu_Callback', 'saveNow_smenu status not recognised, check conditions');
-
-end
-
-% Update handles structure
-guidata(hObject, handles);
-
-% --- Executes on key release with focus on figure1 or any of its controls.
-function figure1_WindowKeyReleaseFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
-%	Key: name of the key that was released, in lower case
-%	Character: character interpretation of the key(s) that was released
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) released
-% handles    structure with handles and user data (see GUIDATA)
-%
-% function sends the release signal
-key = eventdata.Key;
-
-% if strmatch(key, handles.arrows)
-if any(strcmp(key, handles.arrows))
-%     key = strrep(key, 'arrow', '');
-%     key = [key, '_', 'release'];
-%     sendCommand(upper(key), handles.com, handles.logwindow);
-    sendCommand('RELEASE', handles.com, handles.logwindow);
-    handles.keypressed = 0; % key released.. now it can be pressed again
-end
-
-% Update handles structure
-guidata(hObject, handles);
-
-% --- Executes on key press with focus on figure1 or any of its controls.
-function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-%
-% function should send only onecommand when the key is pressed (don't care
-% about the duration of the press).
-key = eventdata.Key;
-
-% if strmatch(key, handles.arrows) && ~handles.keypressed
-if any(strcmp(key, handles.arrows)) &&  ~handles.keypressed
-
-    key = strrep(key, 'arrow', '');
-    sendCommand(upper(key), handles.com, handles.logwindow);
-    handles.keypressed = 1; % key already sent.. no more are needed
-end
-
-% Update handles structure
-guidata(hObject, handles);
-
-
-% --------------------------------------------------------------------
-function help_smenu_Callback(hObject, eventdata, handles)
-% hObject    handle to help_smenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-msgbox({'OpenElec2000', ...
-    'For help regarding the usage refer to http://bergercookie.github.io/Projects/'}, ...
-    'Help Page');
