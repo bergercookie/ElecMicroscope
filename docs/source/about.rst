@@ -1,0 +1,14 @@
+
+About
+=========================================================
+
+The software is the outcome of my individual project for the Systems Biology &
+Bioengineering Research Laboratory of the `Mech. Engineering Department <http://www.mech.ntua.gr/en/home>`_ of `NTUA <http://www.ntua.gr/index_en.html>`_
+
+Tools Used
+----------
+- The project was written in `Matlab GUIDE Environment <http://se.mathworks.com/discovery/matlab-gui.html?refresh=true>`_ . 
+
+- The documentation was written in `Sphinx <http://sphinx-doc.org/>`_
+
+- All the code as well as the documentation was edited using `Vim <http://www.vim.org/>`_

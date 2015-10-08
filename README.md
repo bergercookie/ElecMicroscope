@@ -9,6 +9,7 @@ The software is implemented in both OSX and Windows platforms and is implemented
 using the MATLAB GUIDE environment.
 
 The GUI was implemented for the Systems Biology and Bioengineering Lab of the
-National Technical University of Athens (NTUA).
+National Technical University of Athens (NTUA). For the full documentation,
+click [here](ttp://bergercookie.github.io/Projects/ElecMicroscope2000/).
 
 
