@@ -6,17 +6,16 @@
 Guide to ElecMicroscope2000
 ==============================================
 
-Graphical User Interface for using Arduino Driven Electrical microscope motors.
+Graphical User Interface for using Arduino driven electrical microscope motors.
 The task of the Arduino is to control a series of servomotors and steppermotors
-which drive a microscope. The user can also shoot pictures using any available
-cameras and save them for further analysis.
-The software is implemented in both OSX and Windows platforms and is implemented
+which control the speciments platform for analysis, the filter positions and
+lamp of the microscope, as well as the mounted camera on top of the microscope
+used to take pictures of the speciments.
+The software is implemented in both OSX and Windows platforms and is written
 using the MATLAB GUIDE environment.
-The GUI was implemented for the Systems Biology and Bioengineering Lab of the
-National Technical University of Athens (NTUA).
 
-To download the source code, or make any bug reports, click here
-`<https://github.com/bergercookie/ElecMicroscope>`_
+To download the source code, or make any bug reports, click `here
+<https://github.com/bergercookie/ElecMicroscope>`_
 
 Contents:
 ===========
@@ -25,6 +24,7 @@ Contents:
    :maxdepth: 2
 
    getting-started
+   hardware-config
    window-exploration
    license
    about

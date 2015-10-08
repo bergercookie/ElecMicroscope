@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>&lt;no title&gt; &mdash; ElecMicroscope2000 1 documentation</title>
+    <title>GUI Overview &mdash; ElecMicroscope2000 1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -50,7 +50,71 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  
+  <div class="section" id="gui-overview">
+<h1>GUI Overview<a class="headerlink" href="#gui-overview" title="Permalink to this headline">¶</a></h1>
+<p>Below a general overview of the GUI is presented.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/generalWindow1.png"><img alt="_images/generalWindow1.png" src="_images/generalWindow1.png" style="width: 698.0px; height: 326.0px;" /></a>
+<p class="caption"><span class="caption-text">ElecMicroscope2000 running on a MacOS 10.10</span></p>
+</div>
+<p>Through the window, the user can interact with the following features:</p>
+<ul class="simple">
+<li>Camera pane<ul>
+<li>The user can capture an image using the &#8216;Shoot&#8217; button. The photos taken are
+stored in internal buffer. The user can finally press the &#8216;Save all&#8217; button
+to store them in the path specified
+This behavior can be altered through the &#8216;Configure&#8217; drop-down menu
+(<em>Configure &gt; Save Intsantly</em>).</li>
+<li>By default the saving directory is the one from which you launch the
+program. This can also be changed through the &#8216;Configure&#8217; menu (<em>Configure &gt; Image
+Path...</em>)</li>
+<li>If the user decides not to permanently store the images taken until that point, he can press
+the  &#8216;Clear all&#8217; button. This clears all the images stored in the internal
+buffer.</li>
+</ul>
+</li>
+<li>Lamp - Filter pane<ul>
+<li>Using this panel the user can select when to turn on the the microscope lamp
+as well as select which filter of the microscope is in use. By default the
+lamp is OFF and the filter is set to position 3.</li>
+</ul>
+</li>
+<li>Communication with the Arduino<ul>
+<li>At first the user must issue the port to which the arduino is connected to.
+This can be accomplished using the &#8216;<em>Arduino Port</em>&#8216; option from the Confgure
+drop-down menu.</li>
+<li>When the arduino doesn&#8217;t respond as expected the user can start debugging
+the communication  by sending arbitrary serial commands to the arduino and then
+reading the output written by the arduino in the serial. This can be
+accomplished using the &#8216;Send Serial Command&#8217; pane located in the right-half
+plane of the GUI.</li>
+<li>The log window is meant to give feedback to the user about each of the
+commmands they issue. It also provides two modes of communication [SERIAL]
+and [LOOP] so that the user knows wether the command is sent through the
+serial port to the arduino or not.</li>
+</ul>
+</li>
+<li>XY Platform Control<ul>
+<li>The user can control the movement of the platform on which the speciments
+for analysis are set. Currrently
+<em>the control panel for the platform is not functional</em> and the suggested way
+of controlling the platform is through the arrow keys [LEFT, RIGHT, UP,
+DOWN]. More specifically when the user presses (and holds) one of the
+buttons, the platform moves to the specified direction until the they let
+the key go. This way the motion of the platform is executed in an easy and
+intuitive way.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The command issued is only sent to the serial if [SERIAL] is
+indicated  in the beginning of the corresponding log window message. If the
+arduino cannot be reached or if the connection has not been initiated then
+the communication is in [LOOP] mode, meant for testing purposes only.</p>
+</div>
+</div>
+
 
           </div>
         </div>

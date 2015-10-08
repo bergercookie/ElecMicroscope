@@ -6,7 +6,7 @@ The software is licensed under the *2-clause BSD license*.
 Users are encouraged to use and distribute their code as long as they don't violate the
 terms introduced below:
 
-Copyright (c) 2014, Nikolaos Koukis
+Copyright (c) 2015, Nikolaos Koukis
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

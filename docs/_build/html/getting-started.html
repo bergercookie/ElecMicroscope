@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="top" title="ElecMicroscope2000 1 documentation" href="index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="window-exploration.html" />
+    <link rel="next" title="Hardware Configuration" href="hardware-config.html" />
     <link rel="prev" title="Guide to ElecMicroscope2000" href="index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="window-exploration.html" title="&lt;no title&gt;"
+          <a href="hardware-config.html" title="Hardware Configuration"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Guide to ElecMicroscope2000"
@@ -52,14 +52,60 @@
             
   <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="downloading-the-software">
-<h2>Downloading the software<a class="headerlink" href="#downloading-the-software" title="Permalink to this headline">¶</a></h2>
-</div>
 <div class="section" id="packages-required">
 <h2>Packages required<a class="headerlink" href="#packages-required" title="Permalink to this headline">¶</a></h2>
+<p>In order for the GUI to work the user must have the following MATLAB toolboxes,
+packages and Arduino libraries installed in his computer:</p>
+<ul class="simple">
+<li>MATLAB Toolboxes<ul>
+<li><a class="reference external" href="http://se.mathworks.com/products/imaq/">Image Acquisition</a></li>
+<li><a class="reference external" href="http://se.mathworks.com/products/image/">Image Processing</a></li>
+</ul>
+</li>
+<li>MATLAB Packages<ul>
+<li><a class="reference external" href="http://se.mathworks.com/help/imaq/installing-the-support-packages-for-image-acquisition-toolbox-adaptors.html">Image Acquisition Adaptors</a></li>
+</ul>
+</li>
+<li>Arduino Library<ul>
+<li><a class="reference external" href="http://www.airspayce.com/mikem/arduino/AccelStepper/">AccelStepper</a>
+(included in the ArduinoCode folder)</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In future versions an exe file will possibly be made as well, so that
+the setup operation is fully automated.</p>
+</div>
 </div>
 <div class="section" id="setup-and-execution">
 <h2>Setup and Execution<a class="headerlink" href="#setup-and-execution" title="Permalink to this headline">¶</a></h2>
+<p>To download the project navigate to the corresponding <a class="reference external" href="https://github.com/bergercookie/ElecMicroscope">Github repository</a> and either clone the project or downlaod the zip version.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/projectDownload.png"><img alt="_images/projectDownload.png" src="_images/projectDownload.png" style="width: 521.0px; height: 347.5px;" /></a>
+</div>
+<p>Before running the GUI, the user must have a series of packages and extensions
+installed in MATLAB. These are described in the <a class="reference internal" href="#packages-required">Packages required</a> section
+above. If everything looks OK, the user can then proceed and upload the Arduino
+Code to the Arduino, start matlab and and then launch the GUI from its
+corresponding folder.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/arduinoCode.png"><img alt="_images/arduinoCode.png" src="_images/arduinoCode.png" style="width: 324.0px; height: 387.0px;" /></a>
+</div>
+<p>A summary of the steps is also described below:</p>
+<ul class="simple">
+<li>Download the ZIP file/ Clone the Github repository</li>
+<li>Upload the arduino code (ArduinoCode.ino) to the Arduino</li>
+<li>Launch matlab, run the &#8216;microscope&#8217; command (make sure you are running it
+from inside its corresponding folder)</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Make sure you close MATLAB before trying to upload a different
+version of the arduino code. Otherwise the Arduino IDE will not be able to
+upload the program using the specified port as MATLAB still has
+read/write access to the port.</p>
+</div>
 </div>
 </div>
 
@@ -72,7 +118,6 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Getting Started</a><ul>
-<li><a class="reference internal" href="#downloading-the-software">Downloading the software</a></li>
 <li><a class="reference internal" href="#packages-required">Packages required</a></li>
 <li><a class="reference internal" href="#setup-and-execution">Setup and Execution</a></li>
 </ul>
@@ -83,8 +128,8 @@
   <p class="topless"><a href="index.html"
                         title="previous chapter">Guide to ElecMicroscope2000</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="window-exploration.html"
-                        title="next chapter">&lt;no title&gt;</a></p>
+  <p class="topless"><a href="hardware-config.html"
+                        title="next chapter">Hardware Configuration</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -116,7 +161,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="window-exploration.html" title="&lt;no title&gt;"
+          <a href="hardware-config.html" title="Hardware Configuration"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Guide to ElecMicroscope2000"

@@ -389,23 +389,37 @@ function shoot_btn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future versiqon of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% todo - implement the 'saveNow_smenu'.
-% flag in the handles --> boolSaveNow (boolean)
+if handles.boolSaveNow == 0
+    
+    img = getsnapshot(handles.camera.vid);
+    % figure(); imshow(img);
+    
+    % store the images in a struct for later manipulation
+    handles.capture = tempstore(img, handles.capture);
+    
+    % log message
+    msg = sprintf('Image successfuly taken');
+    logCommand(msg, handles.logwindow)
 
-img = getsnapshot(handles.camera.vid);
-% figure(); imshow(img);
+elseif handles.boolSaveNow == 1
 
-% store the images in a struct for later manipulation
-handles.capture = tempstore(img, handles.capture);
-
-% log message
-msg = sprintf('Image successfuly taken');
-logCommand(msg, handles.logwindow)
-
-% fprintf(1, 'Inside Shoot function, boolSaveNow = %d\n', handles.boolSaveNow);
-if handles.boolSaveNow == 1
-%     fprintf(1, 'microscope: Inside the boolSaveNow if\n');
-    saveall_btn_Callback(hObject, eventdata, handles)
+    %     fprintf(1, 'microscope: Inside the boolSaveNow if\n');
+    img = getsnapshot(handles.camera.vid);
+    
+    % save the image instantly in the same format as the ones saved
+    % in a massive fashion
+    
+    fname = datetimestr;
+    theformat = handles.capture.format;
+    sep = handles.capture.sep;
+    path = handles.capture.path;
+    fname = [path, sep, fname, theformat];
+    imwrite(img, fname);
+    % log message
+    msg = sprintf('Image was saved,\n\tPath=%s', ...
+        handles.capture.path);
+    logCommand(msg, handles.logwindow);
+    
 end
 
 % Update handles structure
